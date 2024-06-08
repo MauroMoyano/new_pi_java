@@ -1,25 +1,18 @@
-package entities;
-
-import dao.dto.ExpenseCategoryDto;
+package dao.dto;
 
 import java.util.Date;
 
-public class ExpenseCategory {
+public class ExpenseCategoryDto {
 
     private Integer id;
     private String name;
 
-    public ExpenseCategory() {
+    public ExpenseCategoryDto() {
     }
 
-    public ExpenseCategory(Integer id, String name) {
+    public ExpenseCategoryDto(Integer id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public ExpenseCategory(ExpenseCategoryDto expenseCategoryDto) {
-        this.id = expenseCategoryDto.getId();
-        this.name = expenseCategoryDto.getName();
     }
 
     public Integer getId() {

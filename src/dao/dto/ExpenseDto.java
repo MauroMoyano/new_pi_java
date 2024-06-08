@@ -1,26 +1,26 @@
-package entities;
+package dao.dto;
 
-public class Expense {
-    private Integer id;
+public class ExpenseDto {
+
     private Double amount;
     private String date;
     private int categoryId;
+    private int id;
 
-    public Expense() {
+    public ExpenseDto() {
     }
 
-    public Expense(Integer id, Double amount, String date, int categoryId) {
-        this.id = id;
+    public ExpenseDto(Double amount, String date, int categoryId) {
         this.amount = amount;
         this.date = date;
         this.categoryId = categoryId;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -51,10 +51,9 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{" +
-                "id=" + id +
                 ", amount=" + amount +
                 ", date='" + date + '\'' +
-                ", category=" + categoryId +
+                ", categoryId=" + categoryId +
                 '}';
     }
 }

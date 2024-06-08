@@ -1,15 +1,66 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import config.JdbcConfiguration;
+import dao.ExpenseDao;
+import dao.dto.ExpenseDto;
+import dao.impl.ExpenseDaoImpl;
+import exception.InvalidExpenseException;
+import interfaces.ExpenseCalculator;
+import interfaces.impl.ExpenseCalculatorImpl;
+import utils.ExpenseValidateAnswer;
+import utils.InputExpense;
+import utils.Utilities;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.sql.Connection;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws InvalidExpenseException {
+
+
+        Connection conn = JdbcConfiguration.getDBConnection();
+        Scanner scanner = new Scanner(System.in);
+        boolean correctAnswer = true;
+        String answer = "";
+        ExpenseDao expenseDao = new ExpenseDaoImpl(conn);
+        Map<String, Integer> countCategoryMap = new HashMap<>();
+
+        ExpenseCalculator expenseCalculator = new ExpenseCalculatorImpl();
+
+            System.out.println("Desea ingresar un gasto? Respuesta esperada SI/NO: ");
+            answer = scanner.nextLine().toUpperCase().trim();
+
+        correctAnswer = ExpenseValidateAnswer.validateAnswer(answer);
+
+        while(correctAnswer) {
+            InputExpense.input();
+
+            System.out.println("Desea ingresar un gasto? Respuesta esperada SI/NO: ");
+            answer = scanner.nextLine().toUpperCase().trim();
+            correctAnswer = ExpenseValidateAnswer.validateAnswer(answer);
         }
+
+        List<ExpenseDto> expenses = expenseDao.getAll();
+
+        System.out.println("Total de gastos registrados: " + expenses.size());
+
+        System.out.println("Total de gastos ingresados: " + expenseCalculator.calculateTotalExpense(expenses));
+
+        System.out.println("TOP 3 DE GASTOS INGRESADOS");
+        List<Double> top3 = expenses.stream()
+                .map(ExpenseDto::getAmount)
+                .limit(3)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        top3.forEach(System.out::println);
+
+        System.out.println("CONTADOR POR CATEGORIA: " );
+        countCategoryMap.forEach( (category, categoryCount) -> System.out.println(category + ": " + categoryCount));
+
+        System.out.println("Detalles de gastos ingresados");
+        Utilities.printElements(expenses);
+        System.out.println("Detalles de gastos ingresados 2da impresión");
+        expenses.forEach(System.out::println);
+
     }
 }
